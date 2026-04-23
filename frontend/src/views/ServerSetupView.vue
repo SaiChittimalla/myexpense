@@ -48,19 +48,13 @@ async function save() {
   checking.value = true
   try {
     const cleaned = url.value.trim().replace(/\/$/, '')
-    // Quick connectivity check
-    const res = await fetch(`${cleaned}/api/method/myexpense.api.auth.get_session_user`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: '{}',
-    })
-    if (!res.ok && res.status !== 403 && res.status !== 401) {
-      throw new Error(`Server responded with ${res.status}`)
-    }
+    // Use no-cors so the ping works even before CORS headers are configured.
+    // An opaque response means the server is reachable; a TypeError means it isn't.
+    await fetch(`${cleaned}/api/method/ping`, { method: 'GET', mode: 'no-cors' })
     setServerUrl(cleaned)
     router.replace('/login')
-  } catch (e) {
-    error.value = 'Could not reach server. Check the URL and make sure you are on the same WiFi.'
+  } catch {
+    error.value = 'Cannot reach that address. Make sure your laptop and phone are on the same network and bench is running.'
   } finally {
     checking.value = false
   }
