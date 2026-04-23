@@ -5,3 +5,20 @@
 tags
 node_modules
 __pycache__
+
+# Frontend build outputs
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Frappe generated assets (rebuilt via bench build)
+myexpense/public/myexpense/
+
+# Android build artifacts (keep source, skip build outputs)
+frontend/android/.gradle/
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/.idea/
+frontend/android/*.iml
+frontend/android/local.properties

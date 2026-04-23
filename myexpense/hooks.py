@@ -5,6 +5,20 @@ app_description = "Personal and Group Expense Tracker"
 app_email = "nithinreddi9991@gmail.com"
 app_license = "mit"
 
+# SPA routing — serve myexpense.html for all /app-mobile/* paths
+website_route_rules = [
+	{"from_route": "/app-mobile/<path:app_path>", "to_route": "myexpense"},
+]
+
+add_to_apps_screen = [
+	{
+		"name": "myexpense",
+		"logo": "/assets/myexpense/images/logo.png",
+		"title": "My Expense",
+		"route": "/app-mobile/",
+	}
+]
+
 # Apps
 # ------------------
 
