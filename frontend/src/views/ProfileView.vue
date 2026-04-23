@@ -90,6 +90,31 @@
         </div>
       </div>
 
+      <!-- App -->
+      <p class="caption" style="margin:20px 0 8px">APP</p>
+      <div class="settings-group">
+        <div class="settings-row" @click="showServerEdit = true">
+          <div class="settings-icon">🌐</div>
+          <div class="settings-body">
+            <div class="settings-title">Server URL</div>
+            <div class="settings-sub">{{ serverUrl || 'Not set' }}</div>
+          </div>
+          <span class="settings-arrow">›</span>
+        </div>
+      </div>
+
+      <!-- Server URL editor -->
+      <div v-if="showServerEdit" style="margin-top:16px;background:var(--surface);border-radius:16px;padding:16px">
+        <label class="caption input-label">SERVER URL</label>
+        <input v-model="newServerUrl" class="input" type="url" inputmode="url"
+          placeholder="http://192.168.1.x:8000" autocapitalize="none" autocorrect="off" spellcheck="false"
+          style="margin-bottom:10px" />
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" style="flex:1" @click="showServerEdit = false">Cancel</button>
+          <button class="btn btn-primary btn-sm" style="flex:1" @click="saveServer">Save</button>
+        </div>
+      </div>
+
       <!-- Sign out -->
       <button class="btn btn-outline" style="margin-top:24px;color:var(--expense);border-color:var(--expense)" @click="doLogout">
         Sign out
@@ -105,11 +130,21 @@
 import { ref, computed, onMounted } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
-import { useFrappe } from '@/composables/useFrappe'
+import { useFrappe, getServerUrl, setServerUrl } from '@/composables/useFrappe'
 
 const auth = useAuthStore()
 const router = useRouter()
 const { call } = useFrappe()
+
+const showServerEdit = ref(false)
+const serverUrl = ref(getServerUrl())
+const newServerUrl = ref(getServerUrl())
+
+function saveServer() {
+  setServerUrl(newServerUrl.value)
+  serverUrl.value = newServerUrl.value.trim().replace(/\/$/, '')
+  showServerEdit.value = false
+}
 
 const profile = ref({ full_name: '' })
 const stats = ref({ transactions: 10, groups: 3, streak: 12 })

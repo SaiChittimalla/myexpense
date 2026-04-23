@@ -93,7 +93,7 @@
 import { ref, reactive, onMounted } from 'vue'
 import { useExpenseStore } from '@/stores/expense'
 
-defineEmits(['close', 'saved'])
+const emit = defineEmits(['close', 'saved'])
 const store = useExpenseStore()
 const saving = ref(false)
 const showSplitOptions = ref(false)
@@ -142,7 +142,7 @@ async function submit() {
       is_split: form.is_split ? 1 : 0,
     }
     await store.addExpense(payload)
-    defineEmits(['saved'])
+    emit('saved')
   } finally {
     saving.value = false
   }

@@ -1,11 +1,16 @@
-// Thin wrapper around Frappe's fetch-based API
-// __API_BASE__ is injected by vite.mobile.config.js for the APK build.
+// Thin wrapper around Frappe's fetch-based API.
+// In the APK, the user sets the server URL via the setup screen (stored in localStorage).
 // In dev/Frappe-hosted mode it falls back to relative URLs.
-const API_ROOT = (typeof __API_BASE__ !== 'undefined' && __API_BASE__) ? __API_BASE__ : ''
-const BASE = `${API_ROOT}/api/method`
+function getApiRoot() {
+  return localStorage.getItem('api_base') || ''
+}
+
+function getBase() {
+  return `${getApiRoot()}/api/method`
+}
 
 async function call(method, params = {}) {
-  const res = await fetch(`${BASE}/${method}`, {
+  const res = await fetch(`${getBase()}/${method}`, {
     method: 'POST',
     credentials: 'include',
     headers: {
@@ -32,7 +37,7 @@ function getCsrf() {
 
 async function get(method, params = {}) {
   const qs = new URLSearchParams(params).toString()
-  const res = await fetch(`${BASE}/${method}${qs ? '?' + qs : ''}`, {
+  const res = await fetch(`${getBase()}/${method}${qs ? '?' + qs : ''}`, {
     headers: { 'X-Frappe-CSRF-Token': getCsrf() },
   })
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
@@ -57,7 +62,7 @@ export async function getLoggedUser() {
 }
 
 export async function login(usr, pwd) {
-  const res = await fetch(`${API_ROOT}/api/method/login`, {
+  const res = await fetch(`${getApiRoot()}/api/method/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -75,5 +80,14 @@ export async function login(usr, pwd) {
 }
 
 export async function logout() {
-  await fetch(`${API_ROOT}/api/method/logout`, { method: 'POST' })
+  await fetch(`${getApiRoot()}/api/method/logout`, { method: 'POST' })
+}
+
+export function getServerUrl() {
+  return localStorage.getItem('api_base') || ''
+}
+
+export function setServerUrl(url) {
+  const cleaned = url.trim().replace(/\/$/, '')
+  localStorage.setItem('api_base', cleaned)
 }

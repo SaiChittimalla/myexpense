@@ -3,17 +3,11 @@ import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
 import { resolve } from 'path'
 
-// ── Change this to your deployed server URL ──────────────────────────────────
-// For local network testing:  http://192.168.1.107:8000
-// For production server:       https://myexpense.yourdomain.com
-const API_BASE = 'http://192.168.1.107:8000'
-// ─────────────────────────────────────────────────────────────────────────────
+// Server URL is now configured at runtime by the user in the app (stored in localStorage).
+// No need to hardcode it here — the setup screen handles it on first launch.
 
 export default defineConfig({
   base: '/',
-  define: {
-    '__API_BASE__': JSON.stringify(API_BASE),
-  },
   plugins: [
     vue(),
     VitePWA({
